@@ -52,6 +52,61 @@ See: `skills/ask-user/references/ask-user-skill-extension-spec.md`.
 pi install npm:pi-ask-user
 ```
 
+## Interactive question controls
+
+This local version bundles `tools.ts`, adapted from Pi's tools example. It adds:
+
+- `/ask` or `Alt+A` in the main editor: toggle interactive questions.
+- `/ask on` and `/ask off`: allow or block interactive questions locally.
+- `/ask status`: report the current state.
+- `[Ask On]` inline in Pi's stats footer while enabled, matching `/notify`'s
+  `[Notification On]` indicator. The label disappears when questions are off.
+- `/tools`: configure which tools are declared to the model. Changing that list
+  can affect the prompt cache; use `/ask` to control questions without changing it.
+
+Interactive questions default to **off** when the branch has no saved selection.
+The first model request receives an OFF hint before the user message, even without
+an `/ask` toggle. Use `/ask on` or `Alt+A` to enable questions.
+
+`/ask` keeps the `ask_user` definition and system-prompt instructions constant.
+When questions are off, a tool-call handler returns `Interactive questions disabled.`
+before any question UI opens. A hidden, persistent conversation message tells the
+model when availability changes. It is saved **before the next user request**;
+toggling off and back on while idle adds no hint if the model already knows that
+state. Re-enabling after a disabled tool result explicitly clears that result.
+During a run, changes are announced after the current tool results and before
+queued input when another request follows. Toggling alone never starts a model run.
+
+Selections and question mode are saved on the current session branch and restored
+on reload, resume, fork, or `/tree` navigation. Native compaction and pi-context's
+ACM retain the last folded availability announcement beside the corresponding
+summary in model context. That position stays fixed across later requests and
+toggles, preserving the conversation prefix after compaction. Ordinary `/ask`
+changes append conversation messages without changing Claude Bridge's tool or
+system-prompt configuration.
+
+An old saved `/ask off` state is migrated to local blocking with the tool definition
+present. To disable questions while a prompt is open, cancel it with `Esc`, then
+use `Alt+A` in the main editor.
+
+To load this working copy globally, replace an existing npm installation with
+its local path:
+
+```bash
+pi remove npm:pi-ask-user
+pi install ~/repos/pi-ask-user
+```
+
+Run `/reload` in existing Pi sessions after installation or source edits. The
+package includes the tool controls, so remove a separately installed `tools.ts`
+from `~/.pi/agent/extensions/` to avoid duplicate command registrations.
+
+`bun run check:controls` exercises these controls with Pi's local faux provider.
+For integration checks, `PI_TEST_HOST` can select a Pi `dist/index.js`,
+`PI_TEST_CONTEXT_EXTENSION` can load pi-context's extension entry, and
+`PI_TEST_BRIDGE` can select Claude Bridge's `src/transcript.ts`. No model API calls
+are made.
+
 ## Tool name
 
 The registered tool name is:

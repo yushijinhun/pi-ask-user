@@ -27,17 +27,20 @@
   },
   "pi": {
     "extensions": [
-      "./index.ts"
+      "./index.ts",
+      "./tools.ts"
     ],
     "skills": [
       "./skills"
     ]
   },
   "files": [
+    "footer.ts",
     "index.ts",
     "settings.ts",
     "single-select-layout.ts",
     "tern.ts",
+    "tools.ts",
     "skills",
     "README.md",
     "LICENSE"
@@ -47,9 +50,10 @@
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "check:host": "node scripts/host-smoke.mjs",
+    "check:controls": "node --test scripts/controls-smoke.mjs",
     "check:docs": "node scripts/check-doc-examples.mjs",
     "check:package": "node scripts/check-package.mjs",
-    "check": "bun run test && bun run typecheck && bun run check:host && bun run check:docs && bun run check:package"
+    "check": "bun run test && bun run typecheck && bun run check:host && bun run check:controls && bun run check:docs && bun run check:package"
   },
   "devDependencies": {
     "@earendil-works/pi-coding-agent": "1.5.2",

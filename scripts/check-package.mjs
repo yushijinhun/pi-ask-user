@@ -9,6 +9,7 @@ const [tarball] = Array.isArray(packed) ? packed : Object.values(packed);
 const expectedFiles = [
   "LICENSE",
   "README.md",
+  "footer.ts",
   "index.ts",
   "settings.ts",
   "package.json",
@@ -16,6 +17,7 @@ const expectedFiles = [
   "skills/ask-user/SKILL.md",
   "skills/ask-user/references/ask-user-skill-extension-spec.md",
   "tern.ts",
+  "tools.ts",
 ];
 assert.deepEqual(tarball.files.map(({ path }) => path).sort(), expectedFiles.sort());
 console.log(`Package contents verified: ${tarball.files.length} files (${tarball.size} bytes packed)`);
